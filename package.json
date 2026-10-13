@@ -10,6 +10,7 @@
     "build": "node scripts/build.ts",
     "check": "tsc --noEmit",
     "start": "node src/main.ts",
+    "example:ledger": "node src/ledger-example.ts",
     "test": "npm run build && npm run check && node --test test/*.test.ts"
   },
   "devDependencies": {

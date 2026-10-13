@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { fulfill } from "../src/inventory.ts";
+import { fulfill } from "../src/native.ts";
 
 test("fulfills available stock without overselling", () => {
   assert.equal(fulfill(10, 7), 7);

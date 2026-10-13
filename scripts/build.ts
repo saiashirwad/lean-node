@@ -16,18 +16,25 @@ const leanPrefix = execFileSync("lean", ["--print-prefix"], {
   encoding: "utf8",
 }).trim();
 
-execFileSync("lean", ["-DwarningAsError=true", "-c", "../build/Inventory.c", "Inventory.lean"], {
-  cwd: lean,
-  stdio: "inherit",
-});
+const modules = ["Inventory", "Ledger", "Native"];
+const env = { ...process.env, LEAN_PATH: `${root}build` };
+
+for (const module of modules) {
+  execFileSync("lean", [
+    "-DwarningAsError=true",
+    "-o", `../build/${module}.olean`,
+    "-c", `../build/${module}.c`,
+    `${module}.lean`,
+  ], { cwd: lean, env, stdio: "inherit" });
+}
 
 execFileSync("leanc", [
   "-shared",
   "-fPIC",
   "-O2",
-  "-o", `${root}build/inventory.node`,
+  "-o", `${root}build/lean.node`,
   `${root}native/addon.c`,
-  `${root}build/Inventory.c`,
+  ...modules.map((module) => `${root}build/${module}.c`),
   "-I", `${root}node_modules/node-api-headers/include`,
   "-L", `${leanPrefix}/lib/lean`,
   "-lleanshared",

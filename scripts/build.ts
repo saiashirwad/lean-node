@@ -29,6 +29,8 @@ execFileSync("leanc", [
   `${root}native/addon.c`,
   `${root}build/Inventory.c`,
   "-I", `${root}node_modules/node-api-headers/include`,
+  "-L", `${leanPrefix}/lib/lean`,
+  "-lleanshared",
   `-Wl,-rpath,${leanPrefix}/lib/lean`,
   ...(process.platform === "darwin"
     ? ["-mmacosx-version-min=12.0", "-Wl,-undefined,dynamic_lookup"]

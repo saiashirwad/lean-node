@@ -1,7 +1,7 @@
 # Lean + Node
 
-A small inventory example where TypeScript handles I/O and an N-API addon calls Lean 4 compiled to native code.
-`fulfill(stock, requested)` returns the number of items shipped, with both inputs restricted to unsigned 32-bit integers.
-Lean proves that this exported function never oversells, never exceeds the request, and fills the whole request when stock is sufficient; proofs are checked at build time, while the native bridge remains trusted.
-Use Node.js 24+, TypeScript 7, [elan](https://github.com/leanprover/elan), and a C toolchain on macOS or Linux, with Lean sources in `lean/`.
-Run `npm ci`, `npm test`, then `npm start` to build, check the proofs and types, test the native boundary, and run the example directly from `.ts` files.
+TypeScript handles input and output, and an N-API addon calls native code compiled from `lean/Inventory.lean`.
+`fulfill(stock, requested)` returns the smaller of two unsigned 32-bit quantities, so an order ships in full unless stock runs out.
+Lean checks the inventory proofs at build time, not runtime, and the C bridge remains outside those proofs.
+Use Node.js 24+, TypeScript 7, [elan](https://github.com/leanprover/elan), and a C toolchain on macOS or Linux.
+Run `npm ci` to install dependencies, `npm test` to build and test, and `npm start` to run the `.ts` example.

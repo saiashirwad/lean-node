@@ -1,0 +1,36 @@
+import { execFileSync } from "node:child_process";
+import { mkdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+const root = fileURLToPath(new URL("../", import.meta.url));
+const lean = fileURLToPath(new URL("../lean/", import.meta.url));
+
+if (process.platform !== "darwin" && process.platform !== "linux") {
+  throw new Error("The native build supports macOS and Linux.");
+}
+
+mkdirSync(new URL("../build/", import.meta.url), { recursive: true });
+
+const leanPrefix = execFileSync("lean", ["--print-prefix"], {
+  cwd: lean,
+  encoding: "utf8",
+}).trim();
+
+execFileSync("lean", ["-DwarningAsError=true", "-c", "../build/Inventory.c", "Inventory.lean"], {
+  cwd: lean,
+  stdio: "inherit",
+});
+
+execFileSync("leanc", [
+  "-shared",
+  "-fPIC",
+  "-O2",
+  "-o", `${root}build/inventory.node`,
+  `${root}native/addon.c`,
+  `${root}build/Inventory.c`,
+  "-I", `${root}node_modules/node-api-headers/include`,
+  `-Wl,-rpath,${leanPrefix}/lib/lean`,
+  ...(process.platform === "darwin"
+    ? ["-mmacosx-version-min=12.0", "-Wl,-undefined,dynamic_lookup"]
+    : []),
+], { cwd: lean, stdio: "inherit" });

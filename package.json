@@ -1,0 +1,20 @@
+{
+  "name": "lean-node",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "check": "tsc --noEmit",
+    "start": "node src/main.ts",
+    "test": "npm run build && npm run check && node --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "node-api-headers": "1.9.0",
+    "typescript": "7.0.2"
+  }
+}
